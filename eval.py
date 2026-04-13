@@ -1,17 +1,20 @@
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 import argparse
+import torch
 from tqdm import tqdm
 from data.data import *
-from torchvision import transforms
 from torch.utils.data import DataLoader
 from loss.losses import *
 from net.CIDNet import CIDNet
+from device_utils import empty_cache, resolve_device, tensor_to_pil_image, warn_if_fallback
 
 
-def eval(model, testing_data_loader, model_path, output_folder,norm_size=True,LOL=False,v2=False,unpaired=False,alpha=1.0,gamma=1.0):
+def eval(model, testing_data_loader, model_path, output_folder,norm_size=True,LOL=False,v2=False,unpaired=False,alpha=1.0,gamma=1.0,device=None):
+    if device is None:
+        device = resolve_device()
     torch.set_grad_enabled(False)
-    model.load_state_dict(torch.load(model_path, map_location=lambda storage, loc: storage))
+    model.load_state_dict(torch.load(model_path, map_location=device))
+    model = model.to(device)
     print('Pre-trained model is loaded.')
     model.eval()
     print('Evaluation:')
@@ -30,19 +33,18 @@ def eval(model, testing_data_loader, model_path, output_folder,norm_size=True,LO
             else:
                 input, name, h, w = batch[0], batch[1], batch[2], batch[3]
             
-            input = input.cuda()
+            input = input.to(device)
             output = model(input**gamma) 
             
-        if not os.path.exists(output_folder):          
-            os.mkdir(output_folder)  
+        os.makedirs(output_folder, exist_ok=True)
             
-        output = torch.clamp(output.cuda(),0,1).cuda()
+        output = torch.clamp(output,0,1)
         if not norm_size:
             output = output[:, :, :h, :w]
         
-        output_img = transforms.ToPILImage()(output.squeeze(0))
+        output_img = tensor_to_pil_image(output.squeeze(0))
         output_img.save(output_folder + name[0])
-        torch.cuda.empty_cache()
+        empty_cache(device)
     print('===> End evaluation')
     if LOL:
         model.trans.gated = False
@@ -80,12 +82,10 @@ if __name__ == '__main__':
     ep = eval_parser.parse_args()
 
 
-    cuda = True
-    if cuda and not torch.cuda.is_available():
-        raise Exception("No GPU found, or need to change CUDA_VISIBLE_DEVICES number")
+    device = resolve_device(prefer_gpu=True)
+    warn_if_fallback(True, device, context='eval')
     
-    if not os.path.exists('./output'):          
-            os.mkdir('./output')  
+    os.makedirs('./output', exist_ok=True)
     
     norm_size = True
     num_workers = 1
@@ -161,6 +161,6 @@ if __name__ == '__main__':
         norm_size = False
         weight_path = ep.unpaired_weights
         
-    eval_net = CIDNet().cuda()
-    eval(eval_net, eval_data, weight_path, output_folder,norm_size=norm_size,LOL=ep.lol,v2=ep.lol_v2_real,unpaired=ep.unpaired,alpha=alpha,gamma=ep.gamma)
+    eval_net = CIDNet().to(device)
+    eval(eval_net, eval_data, weight_path, output_folder,norm_size=norm_size,LOL=ep.lol,v2=ep.lol_v2_real,unpaired=ep.unpaired,alpha=alpha,gamma=ep.gamma,device=device)
 

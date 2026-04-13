@@ -1,5 +1,4 @@
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 import torch
 import glob
 import cv2
@@ -9,6 +8,7 @@ from PIL import Image
 from tqdm import tqdm
 import argparse
 import platform
+from device_utils import empty_cache, resolve_device, warn_if_fallback
 
 
 
@@ -62,13 +62,14 @@ def calculate_psnr(target, ref):
     psnr = 10.0 * np.log10(255.0 * 255.0 / (np.mean(np.square(diff)) + 1e-8))
     return psnr
 
-def metrics(im_dir, label_dir, use_GT_mean):
+def metrics(im_dir, label_dir, use_GT_mean, device=None):
+    if device is None:
+        device = resolve_device()
     avg_psnr = 0
     avg_ssim = 0
     avg_lpips = 0
     n = 0
-    loss_fn = lpips.LPIPS(net='alex')
-    loss_fn.cuda()
+    loss_fn = lpips.LPIPS(net='alex').to(device)
     for item in tqdm(sorted(glob.glob(im_dir))):
         n += 1
         
@@ -95,8 +96,8 @@ def metrics(im_dir, label_dir, use_GT_mean):
         
         score_psnr = calculate_psnr(im1, im2)
         score_ssim = calculate_ssim(im1, im2)
-        ex_p0 = lpips.im2tensor(im1).cuda()
-        ex_ref = lpips.im2tensor(im2).cuda()
+        ex_p0 = lpips.im2tensor(im1).to(device)
+        ex_ref = lpips.im2tensor(im2).to(device)
         
 
         score_lpips = loss_fn.forward(ex_ref, ex_p0)
@@ -104,7 +105,7 @@ def metrics(im_dir, label_dir, use_GT_mean):
         avg_psnr += score_psnr
         avg_ssim += score_ssim
         avg_lpips += score_lpips.item()
-        torch.cuda.empty_cache()
+        empty_cache(device)
     
 
     avg_psnr = avg_psnr / n
@@ -125,6 +126,9 @@ if __name__ == '__main__':
     mea_parser.add_argument('--fivek', action='store_true', help='measure fivek dataset')
     mea = mea_parser.parse_args()
 
+    device = resolve_device(prefer_gpu=True)
+    warn_if_fallback(True, device, context='measure')
+
     if mea.lol:
         im_dir = './output/LOLv1/*.png'
         label_dir = './datasets/LOLdataset/eval15/high/'
@@ -144,7 +148,7 @@ if __name__ == '__main__':
         im_dir = './output/fivek/*.jpg'
         label_dir = './datasets/FiveK/test/target/'
 
-    avg_psnr, avg_ssim, avg_lpips = metrics(im_dir, label_dir, mea.use_GT_mean)
+    avg_psnr, avg_ssim, avg_lpips = metrics(im_dir, label_dir, mea.use_GT_mean, device=device)
     print("===> Avg.PSNR: {:.4f} dB ".format(avg_psnr))
     print("===> Avg.SSIM: {:.4f} ".format(avg_ssim))
     print("===> Avg.LPIPS: {:.4f} ".format(avg_lpips))

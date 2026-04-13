@@ -20,6 +20,10 @@ def option():
     parser.add_argument('--gpu_mode', type=_str2bool, default=True)
     parser.add_argument('--shuffle', type=_str2bool, default=True)
     parser.add_argument('--threads', type=int, default=16, help='number of threads for dataloader to use')
+    parser.add_argument('--dry_run', type=_str2bool, default=False, help='use random tensors instead of a real dataset')
+    parser.add_argument('--dry_run_train_samples', type=int, default=4, help='number of synthetic training samples for dry run')
+    parser.add_argument('--dry_run_eval_samples', type=int, default=2, help='number of synthetic eval samples for dry run')
+    parser.add_argument('--skip_eval', type=_str2bool, default=False, help='skip periodic evaluation/metrics')
 
     # choose a scheduler
     parser.add_argument('--cos_restart_cyclic', type=_str2bool, default=False)

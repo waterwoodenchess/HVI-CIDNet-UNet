@@ -1,19 +1,25 @@
-from torchvision.transforms import Compose, ToTensor, RandomCrop, RandomHorizontalFlip, RandomVerticalFlip
+from torchvision.transforms import Compose, RandomCrop, RandomHorizontalFlip, RandomVerticalFlip
 from data.LOLdataset import *
 from data.eval_sets import *
 from data.SICE_blur_SID import *
 from data.fivek import *
+from device_utils import pil_to_float_tensor
+
+
+class PILToFloatTensor:
+    def __call__(self, image):
+        return pil_to_float_tensor(image)
 
 def transform1(size=256):
     return Compose([
         RandomCrop((size, size)),
         RandomHorizontalFlip(),
         RandomVerticalFlip(),
-        ToTensor(),
+        PILToFloatTensor(),
     ])
 
 def transform2():
-    return Compose([ToTensor()])
+    return Compose([PILToFloatTensor()])
 
 
 

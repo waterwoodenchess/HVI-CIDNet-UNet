@@ -4,11 +4,11 @@ import json
 import safetensors.torch as sf
 from huggingface_hub import hf_hub_download
 import argparse
-import torchvision.transforms as transforms
 import torch.nn.functional as F
 import torch
 import platform
 from PIL import Image
+from device_utils import pil_to_float_tensor, resolve_device, tensor_to_pil_image, warn_if_fallback
 
 
 def from_pretrained(cls, pretrained_model_name_or_path: str):
@@ -38,13 +38,14 @@ if __name__ == '__main__':
     eval_parser.add_argument('--gamma', type=float, default=1.0)
     el = eval_parser.parse_args()
 
-    model = CIDNet().cuda()
+    device = resolve_device(prefer_gpu=True)
+    warn_if_fallback(True, device, context='eval_hf')
+    model = CIDNet().to(device)
     model = from_pretrained(cls=model,pretrained_model_name_or_path=el.path)
     model.eval()
 
-    pil2tensor = transforms.Compose([transforms.ToTensor()])
     img = Image.open(el.input_img).convert('RGB')
-    input = pil2tensor(img)
+    input = pil_to_float_tensor(img)
     factor = 8
     h, w = input.shape[1], input.shape[2]
     H, W = ((h + factor) // factor) * factor, ((w + factor) // factor) * factor
@@ -56,15 +57,14 @@ if __name__ == '__main__':
         model.trans.alpha = el.alpha_i
         model.trans.gated = True
         model.trans.gated2 = True
-        output = model(input.cuda()**el.gamma)
+        output = model(input.to(device)**el.gamma)
             
 
-    output = torch.clamp(output.cuda(),0,1).cuda()
+    output = torch.clamp(output,0,1)
     output = output[:, :, :h, :w]
-    enhanced_img = transforms.ToPILImage()(output.squeeze(0))
+    enhanced_img = tensor_to_pil_image(output.squeeze(0))
     output_folder = './output_hf'
-    if not os.path.exists(output_folder):          
-        os.mkdir(output_folder)  
+    os.makedirs(output_folder, exist_ok=True)
     item = el.input_img
     name = item.split('/')[-1]
     enhanced_img.save(output_folder + "/" + name)

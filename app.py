@@ -1,24 +1,22 @@
 import numpy as np
 import torch
 import gradio as gr
-from PIL import Image
 from net.CIDNet import CIDNet
-import torchvision.transforms as transforms
 import torch.nn.functional as F
 import os
 import imquality.brisque as brisque
 from loss.niqe_utils import *
 import platform
 import argparse
+from device_utils import pil_to_float_tensor, resolve_device, tensor_to_pil_image, warn_if_fallback
 
 opt_parser = argparse.ArgumentParser(description='App')
 opt_parser.add_argument('--cpu', action='store_true', help='CPU-Only')
 opt = opt_parser.parse_args()
 
-if opt.cpu:
-    eval_net = CIDNet().cpu()
-else:
-    eval_net = CIDNet().cuda()
+device = resolve_device(prefer_gpu=not opt.cpu)
+warn_if_fallback(not opt.cpu, device, context='app')
+eval_net = CIDNet().to(device)
     
 eval_net.trans.gated = True
 eval_net.trans.gated2 = True
@@ -28,8 +26,7 @@ def process_image(input_img,score,model_path,gamma,alpha_s=1.0,alpha_i=1.0):
     eval_net.load_state_dict(torch.load(os.path.join(directory,model_path), map_location=lambda storage, loc: storage))
     eval_net.eval()
     
-    pil2tensor = transforms.Compose([transforms.ToTensor()])
-    input = pil2tensor(input_img)
+    input = pil_to_float_tensor(input_img)
     factor = 8
     h, w = input.shape[1], input.shape[2]
     H, W = ((h + factor) // factor) * factor, ((w + factor) // factor) * factor
@@ -39,17 +36,11 @@ def process_image(input_img,score,model_path,gamma,alpha_s=1.0,alpha_i=1.0):
     with torch.no_grad():
         eval_net.trans.alpha_s = alpha_s
         eval_net.trans.alpha = alpha_i
-        if opt.cpu:
-            output = eval_net(input**gamma)
-        else:
-            output = eval_net(input.cuda()**gamma)
+        output = eval_net(input.to(device)**gamma)
             
-    if opt.cpu:
-        output = torch.clamp(output,0,1)
-    else:
-        output = torch.clamp(output.cuda(),0,1).cuda()
+    output = torch.clamp(output,0,1)
     output = output[:, :, :h, :w]
-    enhanced_img = transforms.ToPILImage()(output.squeeze(0))
+    enhanced_img = tensor_to_pil_image(output.squeeze(0))
     if score == 'Yes':
         im1 = enhanced_img.convert('RGB')
         score_brisque = brisque.score(im1) 

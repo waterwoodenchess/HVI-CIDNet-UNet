@@ -179,11 +179,26 @@ class VGGFeatureExtractor(nn.Module):
                 max_idx = idx
 
         if os.path.exists(VGG_PRETRAIN_PATH):
-            vgg_net = getattr(vgg, vgg_type)(pretrained=False)
+            try:
+                vgg_net = getattr(vgg, vgg_type)(weights=None)
+            except TypeError:
+                vgg_net = getattr(vgg, vgg_type)(pretrained=False)
             state_dict = torch.load(VGG_PRETRAIN_PATH, map_location=lambda storage, loc: storage)
             vgg_net.load_state_dict(state_dict)
         else:
-            vgg_net = getattr(vgg, vgg_type)(pretrained=True)
+            weights_name = f'{vgg_type.upper()}_Weights'
+            try:
+                if hasattr(vgg, weights_name):
+                    weights = getattr(vgg, weights_name).DEFAULT
+                    vgg_net = getattr(vgg, vgg_type)(weights=weights)
+                else:
+                    vgg_net = getattr(vgg, vgg_type)(pretrained=True)
+            except Exception as exc:
+                print(f'Warning: unable to load pretrained {vgg_type} weights ({exc}). Falling back to randomly initialized weights.')
+                try:
+                    vgg_net = getattr(vgg, vgg_type)(weights=None)
+                except TypeError:
+                    vgg_net = getattr(vgg, vgg_type)(pretrained=False)
 
         features = vgg_net.features[:max_idx + 1]
 
@@ -199,7 +214,7 @@ class VGGFeatureExtractor(nn.Module):
             else:
                 modified_net[k] = v
 
-        self.vgg_net = nn.Sequential(modified_net).cuda()
+        self.vgg_net = nn.Sequential(modified_net)
 
         if not requires_grad:
             self.vgg_net.eval()
@@ -212,9 +227,9 @@ class VGGFeatureExtractor(nn.Module):
 
         if self.use_input_norm:
             # the mean is for image with range [0, 1]
-            self.register_buffer('mean', torch.Tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1).cuda())
+            self.register_buffer('mean', torch.Tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1))
             # the std is for image with range [0, 1]
-            self.register_buffer('std', torch.Tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1).cuda())
+            self.register_buffer('std', torch.Tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1))
 
     def forward(self, x):
         """Forward function.

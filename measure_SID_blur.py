@@ -1,5 +1,4 @@
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 import torch
 import glob
 import cv2
@@ -9,6 +8,7 @@ from PIL import Image
 from os.path import join
 from os import listdir
 import argparse
+from device_utils import empty_cache, resolve_device, warn_if_fallback
 
 
 def is_image_file(filename):
@@ -98,8 +98,8 @@ def metrics(im_dir, label_dir, use_GT_mean):
 
         ex_p0 = lpips.im2tensor(im1)
         ex_ref = lpips.im2tensor(im2)
-        ex_p0 = ex_p0.cuda()
-        ex_ref = ex_ref.cuda()
+        ex_p0 = ex_p0.to(device)
+        ex_ref = ex_ref.to(device)
         score_lpips = loss_fn.forward(ex_ref, ex_p0)
     
         avg_psnr += score_psnr
@@ -120,8 +120,10 @@ if __name__ == '__main__':
     avg_ssim = 0
     avg_lpips = 0
     n = 0
+    device = resolve_device(prefer_gpu=True)
+    warn_if_fallback(True, device, context='measure_SID_blur')
     loss_fn = lpips.LPIPS(net='alex')
-    loss_fn.cuda()
+    loss_fn = loss_fn.to(device)
     if mea.Blur:
         for index in range(1,257):
             fill_index = str(index).zfill(4)
@@ -138,7 +140,7 @@ if __name__ == '__main__':
                 avg_ssim    += i_ssim
                 avg_lpips   += i_lpips.item()
                 n += i_n
-                torch.cuda.empty_cache()
+                empty_cache(device)
     
     elif mea.SID:
         for index in range(1,257):
@@ -156,7 +158,7 @@ if __name__ == '__main__':
                 avg_ssim    += i_ssim
                 avg_lpips   += i_lpips.item()
                 n += i_n
-                torch.cuda.empty_cache()
+                empty_cache(device)
         
     print("===> All Finish")
     print("===> Avg.PSNR: {:.4f} dB ".format(avg_psnr/n))
