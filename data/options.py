@@ -65,7 +65,7 @@ def option():
     parser.add_argument('--val_folder', default='./results/', help='Location to save validation datasets')
 
     # loss weights
-    parser.add_argument('--HVI_weight', type=float, default=1.0)
+    parser.add_argument('--HVI_weight', type=float, default=0.0)
     parser.add_argument('--L1_weight', type=float, default=1.0)
     parser.add_argument('--D_weight',  type=float, default=0.5)
     parser.add_argument('--E_weight',  type=float, default=50.0)

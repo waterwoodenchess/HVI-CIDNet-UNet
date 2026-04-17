@@ -169,3 +169,9 @@ datasets/
 weights/
 results/
 __pycache__/
+
+.codex-tmp/
+.conda-pkgs/
+.vendor/
+.wheelhouse/
+.vscode/

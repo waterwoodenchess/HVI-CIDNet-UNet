@@ -8,7 +8,6 @@ from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 from net.CIDNet import CIDNet
 from data.options import option
-from measure import metrics
 from eval import eval
 from data.data import *
 from loss.losses import *
@@ -96,11 +95,8 @@ def train(epoch):
             output_rgb = model(im1)  
             
         gt_rgb = im2
-        output_hvi = model.HVIT(output_rgb)
-        gt_hvi = model.HVIT(gt_rgb)
-        loss_hvi = L1_loss(output_hvi, gt_hvi) + D_loss(output_hvi, gt_hvi) + E_loss(output_hvi, gt_hvi) + opt.P_weight * P_loss(output_hvi, gt_hvi)[0]
         loss_rgb = L1_loss(output_rgb, gt_rgb) + D_loss(output_rgb, gt_rgb) + E_loss(output_rgb, gt_rgb) + opt.P_weight * P_loss(output_rgb, gt_rgb)[0]
-        loss = loss_rgb + opt.HVI_weight * loss_hvi
+        loss = loss_rgb
         iter += 1
 
         optimizer.zero_grad()
@@ -284,7 +280,7 @@ if __name__ == '__main__':
         f.write(f"lr: {opt.lr}\n")  
         f.write(f"batch size: {opt.batchSize}\n")  
         f.write(f"crop size: {opt.cropSize}\n")  
-        f.write(f"HVI_weight: {opt.HVI_weight}\n")  
+        f.write("HVI_weight: disabled for UNet baseline\n")  
         f.write(f"L1_weight: {opt.L1_weight}\n")  
         f.write(f"D_weight: {opt.D_weight}\n")  
         f.write(f"E_weight: {opt.E_weight}\n")  
@@ -348,6 +344,8 @@ if __name__ == '__main__':
             eval(model, testing_data_loader, model_out_path, opt.val_folder+output_folder, 
                  norm_size=norm_size, LOL=is_lol_v1, v2=is_lolv2_real, alpha=0.8, device=device)
             
+            from measure import metrics
+
             avg_psnr, avg_ssim, avg_lpips = metrics(im_dir, label_dir, use_GT_mean=False, device=device)
             print("===> Avg.PSNR: {:.4f} dB ".format(avg_psnr))
             print("===> Avg.SSIM: {:.4f} ".format(avg_ssim))
@@ -361,3 +359,4 @@ if __name__ == '__main__':
             with open(f"./results/training/metrics{now}.md", "a") as f:
                 f.write(f"| {epoch} | { avg_psnr:.4f} | {avg_ssim:.4f} | {avg_lpips:.4f} |\n")  
         empty_cache(device)
+
