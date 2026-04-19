@@ -1,501 +1,138 @@
-&nbsp;
-
-<p align="center"> <img src="pic/logo.png" width="500px"> </p>
-
-# [CVPR2025] HVI: A New Color Space for Low-light Image Enhancement
-
-**[Qingsen Yan](https://scholar.google.com/citations?user=BSGy3foAAAAJ)<sup>∗ </sup>, [Yixu Feng](https://scholar.google.com/citations?user=WljJ2HUAAAAJ)<sup>∗ </sup>, [Cheng Zhang](https://scholar.google.com/citations?user=L_Av9NcAAAAJ)**,  [Guansong Pang](https://scholar.google.com/citations?user=1ZO7pHkAAAAJ), Kangbiao Shi, [Peng Wu](https://scholar.google.com/citations?user=QkNqUH4AAAAJ), Wei Dong, Jinqiu Sun,  [Yanning Zhang](https://scholar.google.com/citations?user=-wzlS7QAAAAJ)
-
-Previous Version: [You Only Need One Color Space: An Efficient Network for Low-light Image Enhancement](https://arxiv.org/abs/2402.05809)
-
-<div align="center">
-	
-[![arXiv](https://img.shields.io/badge/arXiv-Paper-red.svg)](https://arxiv.org/abs/2502.20272)
-[![Gradio Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Gradio%20-Spaces-violet)](https://huggingface.co/spaces/Fediory/HVI-CIDNet_Low-light-Image-Enhancement_)
-[![Hugging Face Paper](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Paper-green)](https://huggingface.co/papers/2502.20272)
-[![zhihu](https://img.shields.io/badge/zhihu-知乎-179bd3)](https://zhuanlan.zhihu.com/p/27130836644)
-
-
-</div>
-
-&nbsp;
-
-<details open>
-<summary><b>HVI-CIDNet Demo:</b></summary>
-
-![results3](./pic/ui.png)
-
-</details>
-
-## News 🆕
-- **2025.10.27** Thanks [shade233](https://github.com/shade233) for helping me to fix the conflicts and incorrect usage of argparser.
-- **2025.07.11** Upgraded version paper as "HVI-CIDNet+: Beyond Extreme Darkness for Low-Light Image Enhancement" in [Arxiv](https://arxiv.org/abs/2507.06814). The new code, models and results will be uploaded soon. (code_link：[Github](https://github.com/shikangbiao/CIDNet_extension))
-- **2025.06.03** Special Thanks for Kangbiao Shi for training HVI-CIDNet on FiveK dataset follow retinexformer. The training code and models are avaliable now. 🔆
-- **2025.05.01** Our NTIRE2025 LLIE track championship solution, FusionNet, is now public at [Arxiv](https://arxiv.org/pdf/2504.19295)! 📝
-- **2025.03.27** Congratulations! Our team achived [1st place](https://drive.google.com/file/d/1CSXNssZQK5Y_KUWUx3_nYLv-plJn_K43/view) in the competition: [NTIRE 2025 Low Light Image Enhancement Challenge](https://codalab.lisn.upsaclay.fr/competitions/21636) (If you have any question about our NTIRE method, please contact: Kangbiao Shi, email: 18334840904@163.com). We fused our HVI-CIDNet with last year's winner and runner-up models to get the optimal results. We will explain the fusion method thoroughly in detail in the report for subsequent reference. 🚀
-- **2025.03.10** All weights are public at [Hugging Face](https://huggingface.co/papers/2502.20272). Special Thanks to [Niels Rogge](https://github.com/NielsRogge), [Wauplin](https://github.com/Wauplin), and [hysts](https://huggingface.co/hysts).🔆
-- **2025.02.26** Congratulations! Our final-version paper "HVI: A New color space for Low-light Image Enhancement" has been accepted by **CVPR 2025**. 🔥
-- **2025.02.20** A test demo of our model is available on [Hugging Face](https://huggingface.co/spaces/Fediory/HVI-CIDNet_Low-light-Image-Enhancement_). 🤗
-- **2025.01.31** Update train code. Use random gamma function (enhancement curve) to improve cross-dataset generalization. 🔆
-- **2024.06.19** Update newest version of paper in [Arxiv](https://arxiv.org/abs/2402.05809). 📝
-- **2024.05.12** Update peer results on LOLv1. 🤝
-- **2024.04.28** Synchronize all Baidu Pan datasets, outputs, and weights to One Drive. 🌎
-- **2024.04.18** Full version Code, models, visual comparison have been released. We promise that all the weights only trained on train sets, and each weights is reproducible. Hope it will help your future work. If you have trained a better result, please contact us. We look forward to subsequent work based on the HVI color "space"! 💎
-
-- **2024.04.14** Update test fine tuning result and weights on LOLv1 dataset. 🧾
-
-- **2024.03.04** Update five unpaired datasets (DICM, LIME, MEF, NPE, VV) visual results. ✨
-
-- **2024.03.03** Update pre-trained weights and output results on our HVI-CIDNet using Baidu Pan. 🧾
-
-- **2024.02.08** Update HVI-CIDNet original-version paper as "You Only Need One Color Space: An Efficient Network for Low-light Image Enhancement" in [Arxiv](https://arxiv.org/abs/2402.05809v1). The new code, models and results will be uploaded. 🎈
-
-
-
-## Proposed HVI-CIDNet ⚙ 
-
-<details open>
-<summary><b>Motivation:</b></summary>
-
-![results3](./pic/motivation.png)
-
-</details>
-
-<details close>
-<summary><b>HVI-CIDNet pipeline:</b></summary>
-
-![results3](./pic/pipeline.png)
-
-</details>
-
-<details close>
-<summary><b>Lighten Cross-Attention (LCA) Block structure:</b></summary>
-
-![results4](./pic/structure.png)
-
-
-</details>
-
-## Visual Comparison 🖼 
-<details close>
-<summary><b>LOL-v1, LOL-v2-real, and LOL-v2-synthetic:</b></summary>
-
-![results1](./pic/LOL.png)
-
-</details>
-
-<details close>
-<summary><b>DICM, LIME, MEF, NPE, and VV:</b></summary>
-
-![results2](./pic/unpaired.png)
-
-
-</details>
-<details close>
-<summary><b>LOL-Blur:</b></summary>
-
-![results2](./pic/blur.png)
-
-
-</details>
-
-## Weights and Results 🧾
-All the weights that we trained on different datasets is available at [[Baidu Pan](https://pan.baidu.com/s/1rvQcQPwsYbtLIYwB3XgjaA?pwd=yixu)] (code: `yixu`) and [[One Drive](https://1drv.ms/f/s!AoPRJmiD24UpgloqG-S67l1BX0cG?e=0b4GL0)] (code: `yixu`).  Results on DICM, LIME, MEF, NPE, and VV datasets can be downloaded from [[Baidu Pan](https://pan.baidu.com/s/1ApI5B1q2GPBHWdh8AafjlQ?pwd=yixu)] (code: `yixu`) and [[One Drive](https://1drv.ms/f/s!AoPRJmiD24UphBK3DimfMTv74FOi?e=3tkhva)] (code: `yixu`). 
-**Bolded** fonts represent impressive metrics.
-
-<details close>
-<summary><b>The metrics of HVI-CIDNet on paired datasets are shown in the following table: </b></summary>
-
-All the link code is `yixu`.
-
-| Folder (test datasets)                        | PSNR        | SSIM       | LPIPS      | GT Mean | Results                                                      | Weights Path             |
-| --------------------------------------------- | ----------- | ---------- | ---------- | ------- | ------------------------------------------------------------ | ------------------------ |
-| (LOLv1)<br />v1 w perc loss/ wo gt mean       | 23.8091     | 0.8574     | **0.0856** |         | [Baidu Pan](https://pan.baidu.com/s/1k1_oHDLh8oR47r7RTfB4Hw?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24Upgm-DPM6MuNqxcf6L?e=DD1I9g) | LOLv1/w_perc.pth         |
-| (LOLv1)<br />v1 w perc loss/ w gt mean        | 27.7146     | 0.8760     | **0.0791** | √       | ditto                                                        | LOLv1/w_perc.pth         |
-| (LOLv1)<br />v1 wo perc loss/ wo gt mean      | 23.5000     | **0.8703** | 0.1053     |         | [Baidu Pan](https://pan.baidu.com/s/1hMMh8NNqTLJRSZJ6GxI3rw?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24Upgm5MXMToC1-7sFdh?e=c1oKDH) | LOLv1/wo_perc.pth        |
-| (LOLv1)<br />v1 wo perc loss/ w gt mean       | **28.1405** | **0.8887** | 0.0988     | √       | ditto                                                        | LOLv1/wo_perc.pth        |
-| (LOLv2_real)<br />v2 wo perc loss/ wo gt mean | 23.4269     | 0.8622     | 0.1691     |         | [Baidu Pan](https://pan.baidu.com/s/1Lo19WOrFY3_3wsuJ9gIYnw?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UpgnSzz3Tcg8043ci9?e=OS9ZmS) | (lost)                   |
-| (LOLv2_real)<br />v2 wo perc loss/ w gt mean  | 27.7619     | 0.8812     | 0.1649     | √       | ditto                                                        | (lost)                   |
-| (LOLv2_real)<br />v2 best gt mean             | **28.1387** | **0.8920** | **0.1008** | √       | [Baidu Pan](https://pan.baidu.com/s/1qewb6u5w1VUaaEzEjFXllQ?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UpgnBE81jKRMU0izoF?e=1Em6cK) | LOLv2_real/w_prec.pth    |
-| (LOLv2_real)<br />v2 best Normal              | **24.1106** | 0.8675     | 0.1162     |         | [Baidu Pan](https://pan.baidu.com/s/1V9aMZWEU2D0bVRDmPeNzMQ?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UpgnGqZv_vlFN_u2Bg?e=4CiN6T) | (lost)                   |
-| (LOLv2_real)<br />v2 best PSNR                | 23.9040     | 0.8656     | 0.1219     |         | [Baidu Pan](https://pan.baidu.com/s/1PFQ49oa_n7ywTGLl3TUb3A?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UpgnLTGGGFKmXTWBu4?e=JnzL7z) | LOLv2_real/best_PSNR.pth |
-| (LOLv2_real)<br />v2 best SSIM                | 23.8975     | **0.8705** | 0.1185     |         | [Baidu Pan](https://pan.baidu.com/s/1zeBPFJS3HxQ9zZZnYGMn4g?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UpgnPhbdKXmSt0YdxU?e=WT8kae) | LOLv2_real/best_SSIM.pth |
-| (LOLv2_real)<br />v2 best SSIM/ w gt mean     | **28.3926** | 0.8873     | 0.1136     | √       | None                                                         | LOLv2_real/best_SSIM.pth |
-| (LOLv2_syn)<br />syn wo perc loss/ wo gt mean | **25.7048** | **0.9419** | 0.0471     |         | [Baidu Pan](https://pan.baidu.com/s/1ZZtalO3vxqSJOJ58BnfUXw?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UpgnZWp2xWBu8Rv_C_?e=Nn7u4w) | LOLv2_syn/wo_perc.pth    |
-| (LOLv2_syn)<br />syn wo perc loss/ w gt mean  | **29.5663** | **0.9497** | 0.0437     | √       | ditto                                                        | LOLv2_syn/wo_perc.pth    |
-| (LOLv2_syn)<br />syn w perc loss/ wo gt mean  | 25.1294     | 0.9388     | **0.0450** |         | [Baidu Pan](https://pan.baidu.com/s/1R_ltvaWHJ_sY-unHAEGunw?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UpgnV2ouH4IGy955c6?e=chPtYB) | LOLv2_syn/w_perc.pth     |
-| (LOLv2_syn)<br />syn w perc loss/ w gt mean   | 29.3666     | **0.9500** | **0.0403** | √       | ditto                                                        | LOLv2_syn/w_perc.pth     |
-| Sony_Total_Dark                               | **22.9039** | **0.6763** | **0.4109** |         | [Baidu Pan](https://pan.baidu.com/s/15w3oMuF3hOtJK29v_xjX3g?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24Upgn_ijuk--nBUm6fm?e=4ePpHz) | SID.pth                  |
-| LOL-Blur                                      | **26.5719** | **0.8903** | **0.1203** |         | [Baidu Pan](https://pan.baidu.com/s/11zTPd3xrJe0GbEXF_lYHvQ?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24Upgn7AOw_WmC9Yg-z0?e=WeiUi8) | LOL-Blur.pth             |
-| SICE-Mix                                      | **13.4235** | 0.6360     | 0.3624     | √       | [Baidu Pan](https://pan.baidu.com/s/11x4oJuIKE0iJqdqagG1RhQ?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24Upgn1oKivqyksR4ld9?e=JcA0y4) | SICE.pth                 |
-| SICE-Grad                                     | **13.4453** | 0.6477     | 0.3181     | √       | [Baidu Pan](https://pan.baidu.com/s/1IICeonyuUHcUfTapa4GKxw?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UpgnyGiBYyTvFyV9gg?e=7veJSh) | SICE.pth                 |
-| FiveK<br />follow [Retinexformer](https://github.com/caiyuanhao1998/Retinexformer)                                     | 24.4587 | 0.8769     | 0.0851     |        | [Baidu Pan](https://pan.baidu.com/s/1Cv7SbzVoIA2oyX7sAl5ynA?pwd=yixu) and [One Drive](https://1drv.ms/u/c/2985db836826d183/EWiQ-YME-F9DrMA9r4wt-QIBjFCegAn9fU6WDYXbPwzgbg?e=KKe7q9) | fivek.pth                 |
-
-</details>
-
-<details close>
-<summary><b>Performance on five unpaired datasets are shown in the following table:  </b></summary>
-
-| metrics | DICM  | LIME  | MEF   | NPE   | VV    |
-| ------- | ----- | ----- | ----- | ----- | ----- |
-| NIQE    | 3.79  | 4.13  | 3.56  | 3.74  | 3.21  |
-| BRISQUE | 21.47 | 16.25 | 13.77 | 18.92 | 30.63 |
-
-Furthermore, **we found that use random gamma function in the training process can improve the generalization of CIDNet.** You can see details in `train.py` line 53-55, also you can turn-on the random-gamma mode in `data/options.py` line 60 during training process.
-
-We trained on LOLv2-Syn dataset with the random-gamma mode, and save the weights as `LOLv2_syn/generalization.pth` (you can find in the link). The performance are shown in the following table, and you can see 7 metrics improved:
-
-| metrics | DICM  | LIME  | MEF   | NPE   | VV    | Results                                                      |
-| ------- | ----- | ----- | ----- | ----- | ----- | ------------------------------------------------------------ |
-| NIQE    | 3.55  | 3.85  | 3.46  | 3.82  | 3.24  | [Baidu Pan](https://pan.baidu.com/s/1hhsWpcqqMyMnSogDCm_MXg?pwd=yixu) and [One Drive](https://1drv.ms/f/c/2985db836826d183/Eu7lGsiqJplMra5SIV5-HGcBeBE7LI9qbGR7q6RltthBSA?e=BDaRAP) |
-| BRISQUE | 25.62 | 16.02 | 13.08 | 18.90 | 29.55 | ditto                                                        |
-
-The weights with the "strongest" generalization ability we put on the HVI-CIDNet demo on the Hugging Face website, which we highly recommend. Here are its NIQE metrics on five unpaired datasets, which you can easily reproduce on Hugging Face:
-
-| metrics | DICM  | LIME  | MEF   | NPE   | VV    | Average |
-| ------- | ----- | ----- | ----- | ----- | ----- | ------- |
-| NIQE    | 3.36  | 3.03  | 3.11  | 3.33  | 2.49  | 3.13    |
-
-</details>
-
-<details close>
-<summary><b>Test Finetune:  </b></summary>
-
-- While we don't recommend that you perform finetuning on the test set, in order to demonstrate the effectiveness of our model, we also provide here the results of test finetuning training on the LOLv1 dataset. **Using the fine tuning technique on the test set does make the PSNR metrics higher**, but other metrics are not found to be significantly changed on CIDNet, which may result in a lower generalization of the model, so we do not recommend you do this.
-
-| Folder (test datasets)          | PSNR        | SSIM   | LPIPS      | GT Mean | Results                                                      | Weights Path              |
-| ------------------------------- | ----------- | ------ | ---------- | ------- | ------------------------------------------------------------ | ------------------------- |
-| (LOLv1)<br />v1 test finetuning | **25.4036** | 0.8652 | **0.0897** |         | [Baidu Pan](https://pan.baidu.com/s/1MmUVF4orRWFXURJ4Pnbz2w?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24Upgm0szyqstv-exKcV?e=rLXoby) | LOLv1/test_finetuning.pth |
-| (LOLv1)<br />v1 test finetuning | **27.5969** | 0.8696 | 0.0869     | √       | ditto                                                        | ditto                     |
-</details>
-
-<details close>
-<summary><b>Contributions from other peers: </b></summary>
-
-- This section is where other peers have trained better versions of weights using our model, and we will show both their weights and results here. If you have trained better weights, please contact us by email or submit issue.
-
-| Datasets | PSNR        | SSIM   | LPIPS  | GT Mean | Results                                                      | Weights Path               | Contributor Detail                              | GPU         |
-| -------- | ----------- | ------ | ------ | ------- | ------------------------------------------------------------ | -------------------------- | ----------------------------------------------- | ----------- |
-| LOLv1    | **24.7401** | 0.8604 | 0.0896 |         | [Baidu Pan](https://pan.baidu.com/s/1JKFG9UfZdHA0gyhrT-6Ruw?pwd=yixu) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UphCmA1BKfzVUjQDZF?e=cOELSz) | LOLv1/other/PSNR_24.74.pth | [Xi’an Polytechnic University]<br />Yingjian Li | NVIDIA 4070 |
-
-</details>
-
-## 1. Get Started 🌑
-
-### Dependencies and Installation
-
-- Python 3.7.0
-- Pytorch 1.13.1
-
-(1) Create Conda Environment
-
-```bash
-conda create --name CIDNet python=3.7.0
-conda activate CIDNet
-```
-
-(2) Clone Repo
-
-```bash
-git clone git@github.com:Fediory/HVI-CIDNet.git
-```
-
-(3) Install Dependencies
-
-```bash
-cd HVI-CIDNet
-pip install -r requirements.txt
-```
-
-
-### Data Preparation
-
-You can refer to the following links to download the datasets. Note that we only use `low_blur` and `high_sharp_scaled` subsets of `LOL-Blur` dataset.
-
-- [LOLv1](https://daooshee.github.io/BMVC2018website/)
-- LOLv2: [Baidu Pan](https://pan.baidu.com/s/17KTa-6GUUW22Q49D5DhhWw?pwd=yixu) (code: `yixu`) and  [One Drive](https://1drv.ms/u/c/2985db836826d183/EYPRJmiD24UggCmCAQAAAAABEbg62rx0FG21FwLQq0jzLg?e=Im12UA) (code: `yixu`) 
-- LOL-Blur: [Baidu Pan](https://pan.baidu.com/s/1nj054uoLA3gtpV7MNM2eCA?pwd=yixu)(code: `yixu`) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UphBTn9PsLC5hoD-k9?e=Jm0AOa) (code: `yixu`) 
-- DICM,LIME,MEF,NPE,VV: [Baidu Pan](https://pan.baidu.com/s/1FZ5HWT30eghGuaAqqpJGaw?pwd=yixu)(code: `yixu`) and [One Drive](https://1drv.ms/f/s!AoPRJmiD24UphBNGBbsDmSwppNPf?e=2yGImv)(code: `yixu`)
-- SICE: [Baidu Pan](https://pan.baidu.com/s/13ghnpTBfDli3mAzE3vnwHg?pwd=yixu)(code: `yixu`) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UphAlaTIekdMLwLZnA?e=WxrfOa)(code: `yixu`)
-- Sony-Total-Dark(SID): [Baidu Pan](https://pan.baidu.com/s/1mpbwVscbAfQJtkrrzBzJng?pwd=yixu)(code: `yixu`) and [One Drive](https://1drv.ms/u/s!AoPRJmiD24UphAie9l0DuMN20PB7?e=Zc5DcA)(code: `yixu`)
-- FiveK (follow [Retinexformer](https://github.com/caiyuanhao1998/Retinexformer)): [Baidu Disk](https://pan.baidu.com/s/1ajax7N9JmttTwY84-8URxA?pwd=cyh2) (code:`cyh2`), [Google Drive](https://drive.google.com/file/d/11HEUmchFXyepI4v3dhjnDnmhW_DgwfRR/view?usp=sharing)
-
-Then, put them in the following folder:
-
-<details close> <summary>datasets (click to expand)</summary>
-
-```
-├── datasets
-	├── DICM
-	├── FiveK
-		├── test
-			├──input
-			├──target
-		├── train
-			├──input
-			├──target
-	├── LIME
-	├── LOLdataset
-		├── our485
-			├──low
-			├──high
-		├── eval15
-			├──low
-			├──high
-	├── LOLv2
-		├── Real_captured
-			├── Train
-				├── Low
-				├── Normal
-			├── Test
-				├── Low
-				├── Normal
-		├── Synthetic
-			├── Train
-				├── Low
-				├── Normal
-			├── Test
-				├── Low
-				├── Normal
-	├── LOL_blur
-		├── eval
-			├── high_sharp_scaled
-			├── low_blur
-		├── test
-			├── high_sharp_scaled
-				├── 0012
-				├── 0017
-				...
-			├── low_blur
-				├── 0012
-				├── 0017
-				...
-		├── train
-			├── high_sharp_scaled
-				├── 0000
-				├── 0001
-				...
-			├── low_blur
-				├── 0000
-				├── 0001
-				...
-	├── MEF
-	├── NPE
-	├── SICE
-		├── Dataset
-			├── eval
-				├── target
-				├── test
-			├── label
-			├── train
-				├── 1
-				├── 2
-				...
-		├── SICE_Grad
-		├── SICE_Mix
-		├── SICE_Reshape
-	├── Sony_total_dark
-		├── eval
-			├── long
-			├── short
-		├── test
-			├── long
-				├── 10003
-				├── 10006
-				...
-			├── short
-				├── 10003
-				├── 10006
-				...
-		├── train
-			├── long
-				├── 00001
-				├── 00002
-				...
-			├── short
-				├── 00001
-				├── 00002
-				...
-	├── VV
-```
-</details>
-
-## 2. Testing 🌒
-
-
-Download our weights from [[Baidu Pan](https://pan.baidu.com/s/1rvQcQPwsYbtLIYwB3XgjaA?pwd=yixu)] (code: `yixu`) and put them in folder `weights`:
-
-<details close> <summary>weights (click to expand)</summary>
-
-```
-├── weights
-    ├── LOLv1
-        ├── w_perc.pth
-        ├── wo_perc.pth
-        ├── test_finetuning.pth
-    ├── LOLv2_real
-        ├── best_PSNR.pth
-        ├── best_SSIM.pth
-        ├── w_perc.pth
-    ├── LOLv2_syn
-        ├── generalization.pth
-        ├── w_perc.pth
-        ├── wo_perc.pth
-    ├── LOL-Blur.pth
-    ├── SICE.pth
-    ├── SID.pth
-```
-
-</details>
-
-- **You can test our method in our gradio demo with bash code `python app.py`, and go to the URL link "http://127.0.0.1:7862" to enjoy the demo.** (add `--cpu` can inference CPU-only)
-- or You can use `huggingface_hub` to download and test our method as:
-```bash
-# you can find all weights in https://huggingface.co/papers/2502.20272
-python eval_hf.py --path fediory/our_model_path --input_img your/img/path --alpha_s 1.0 --alpha_i 1.0 --gamma 1.0
-
-# for example
-python eval_hf.py --path fediory/HVI-CIDNet-LOLv1-wperc --input_img ./datasets/DICM/01.JPG --alpha_s 1.0 --alpha_i 1.0 --gamma 1.0
-```
-and your enhanced image will be saved at `./output_hf`.
-
-- or **You can test our method as followed, all the results will saved in `./output` folder:**
-
-<details close> <summary>(click to expand)</summary>
-
-```bash
-# LOLv1
-python eval.py --lol --perc # weights that trained with perceptual loss
-python eval.py --lol # weights that trained without perceptual loss
-
-# LOLv2-real
-python eval.py --lol_v2_real --best_GT_mean # you can choose best_GT_mean or best_PSNR or best_SSIM
-
-# LOLv2-syn
-python eval.py --lol_v2_syn --perc # weights that trained with perceptual loss
-python eval.py --lol_v2_syn # weights that trained without perceptual loss
-
-# SICE
-python eval.py --SICE_grad # output SICE_grad
-python eval.py --SICE_mix # output SICE_mix
-
-# FiveK
-python eval.py --fivek # output FiveK follow Retinexformer
-
-# Sony-Total-Dark
-python eval_SID_blur --SID
-
-# LOL-Blur
-python eval_SID_blur --Blur
-
-# five unpaired datasets DICM, LIME, MEF, NPE, VV. 
-# We note that: you can choose one weights in ./weights folder, and set the alpha float number (defualt=1.0) as illumination scale of the datasets.
-# gamma denotes the gamma function (curve), see line 59 of "eval.py"
-# You can change "--DICM" to the other unpaired datasets "LIME, MEF, NPE, VV".
-python eval.py --unpaired --DICM --unpaired_weights --alpha
-# e.g.
-python eval.py --unpaired --DICM --unpaired_weights ./weights/LOLv2_syn/w_perc.pth --alpha 0.9 --gamma 0.9
-
-# Custome Datasets: alpha and gamma are optional.
-python eval.py --unpaired --custome --custome_path ./your/costome/dataset/path --unpaired_weights ./weights/LOLv2_syn/w_perc.pth --alpha 0.9 --gamma 0.9
-```
-
-</details>
-
-- **Also, you can test all the metrics mentioned in our paper as follows:**
-  
-  
-<details close> <summary>(click to expand)</summary>
-
-```bash
-# LOLv1
-python measure.py --lol
-
-# LOLv2-real
-python measure.py --lol_v2_real
-
-# LOLv2-syn
-python measure.py --lol_v2_syn
-
-# Sony-Total-Dark
-python measure_SID_blur.py --SID
-
-# LOL-Blur
-python measure_SID_blur.py --Blur
-
-# SICE-Grad
-python measure.py --SICE_grad
-
-# SICE-Mix
-python measure.py --SICE_mix
-
-# fivek
-python measure.py --fivek
-
-
-# five unpaired datasets DICM, LIME, MEF, NPE, VV. 
-# You can change "--DICM" to the other unpaired datasets "LIME, MEF, NPE, VV".
-python measure_niqe_bris.py --DICM
-
-
-# Note: Following LLFlow, KinD, and Retinxformer, we have also adjusted the brightness of the output image produced by the network, based on the average value of GroundTruth (GT). This only works in paired datasets. If you want to measure it, please add "--use_GT_mean".
-# 
-# e.g.
-python measure.py --lol --use_GT_mean
-  
-```
-
-</details>
-
-- **Evaluating the Parameters, FLOPs, and running time of HVI-CIDNet:**
-
-```bash
-python net_test.py
-```
-
-
-## 3. Training 🌓
-
-- We put all the configurations that need to be adjusted in the `./data/options.py` folder and explained them in the file. We apologize that some of the training parameters we are no longer able to provide and share with you, but we guarantee that all the weights are trainable by parameter tuning. You can train our HVI-CIDNet by:
-
-```bash
-# You can choose --start_warmup True/False for setting the warmup in training stage.
-# You can choose these dataset for training: lol_v1, lolv2_real, lolv2_syn, lol_blur, SID, SICE_mix, SICE_grad, fivek.
-# Below is the example.
-python train.py --dataset lol_v1
-```
-
-- All weights are saved to the `./weights/train` folder and are saved in steps of the checkpoint set in the `options.py`  as `epoch_*.pth` where `*` represent the epoch number.
-- Also, for every weight saved, metrics are measured for the validation set and printed to the command line. Finally, the results of all weights' test metrics on the validation set and options in `./data/options.py` will be saved to `./results/training/metrics-YYYY-mm-dd-HHMMSS.md`.
-- In each epoch, we save an output (test) and GT image to the `./results/training` folder to facilitate the visualization of the training results and progress of each epoch, as well as to detect the generation of gradient explosion in advance.
-- After each checkpoint, we save all the validation set outputs for this time in the `./results` folder to the corresponding folder. Note that we use a replacement strategy for different checkpoints for each dataset. That is, we do not save the plots of all checkpoints, but only the weights of each checkpoint.
-  
-
-## 4. Contacts 🌔
-
-If you have any questions, please contact us or submit an issue to the repository!
-
-Yixu Feng (yixu-nwpu@mail.nwpu.edu.cn)
-
-## 5. Citation 🌕
-
-If you find our work useful for your research, please cite our paper
-
-```
-@article{yan2025hvi,
-  title={HVI: A New color space for Low-light Image Enhancement},
-  author={Yan, Qingsen and Feng, Yixu and Zhang, Cheng and Pang, Guansong and Shi, Kangbiao and Wu, Peng and Dong, Wei and Sun, Jinqiu and Zhang, Yanning},
-  journal={arXiv preprint arXiv:2502.20272},
-  year={2025}
-}
-
-@misc{feng2024hvi,
-      title={You Only Need One Color Space: An Efficient Network for Low-light Image Enhancement}, 
-      author={Yixu Feng and Cheng Zhang and Pei Wang and Peng Wu and Qingsen Yan and Yanning Zhang},
-      year={2024},
-      eprint={2402.05809},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
-}
-```
+本项目只含有整个模型的基准模型：Unet，删去了其他的模块比如HVI色彩空间等，具体论文可看：[Yan_HVI_A_New_Color_Space_for_Low-light_Image_Enhancement_CVPR_2025_paper.pdf](https://github.com/user-attachments/files/26818592/Yan_HVI_A_New_Color_Space_for_Low-light_Image_Enhancement_CVPR_2025_paper.pdf)
+
+还是讲讲什么是Unet吧：
+首先祭出最经典的图：
+<img width="2160" height="1440" alt="image" src="https://github.com/user-attachments/assets/1dfd1ac7-1e98-4fc6-a7dd-33cd1b2f9bad" />
+由此可见Unet整体是一个U型的网络，所以称之为Unet。Unet总共分为四个部分：编码层、瓶颈层、解码器和跳跃连接。具体功能如下：
+首先输入一张完整的图片，然后编码器进行多次卷积和池化（一般是4次）（再讲一下卷积和池化的概念：卷积就是用好几个卷积核对图片进行扫描，一个卷积核扫描图片中的一类特征，扫描完毕之后一个卷积核形成一张具有这类特征的特征图，这个过程就是卷积。你可以想象一个卷积核就是一个特征扫描仪，专门扫描某一种特征的，比如红色，如果扫描的这块是红色，就输出大数值，如果不是就输出小数值，扫描完成之后将这些数值拼接形成一张专门描述这类特征的特征图。与此同时，我们将一类特征称为“一个通道”。那什么是池化：池化就是对特征图进行缩小的过程。因为卷积过程中总会不可避免的携带无关紧要的细节和冗余信息，而这些冗余信息和细节会对之后的计算形成极大的不便，所以要对特征图进行缩小，一般分为两种：最大池化和平均池化。最大池化就是将完整的图片按照一定的规格进行切分，然后把每一格的最大值进行保留，最后形成一张新的最强特征的特征图；平均池化就是把每一格的平均值进行保留，最终的特征图比最大池化柔和一点），得到了多张特征图。
+
+之后在瓶颈层将这几张特征图进行拼接融合，形成了一张完整的总特征图。
+
+再然后需要根据这张完整的总特征图在解码器层通过跳跃连接，将编码层对应层和解码层对应层进行叠加融合，因为在编码层浅层我们知道的是对应的细节性东西，比如图形的边界和纹理，而在编码器的深层和瓶颈层我们知道的是这是个什么东西，将二者融合，我们可以不仅知道那是什么东西，而且还可以知道这个东西的具体细节。
+
+这就是完整的Unet。
+
+整个基准模型这样来做：
+先跑1个epoch，来检测整个模型是否稳定，具体的指令是：set PYTHONPATH=C:\Users\lenovo\Desktop\deeplearning\HVI-CIDNet-experiment\.vendor\site-packages && python train.py --gpu_mode false --threads 0 --batchSize 1 --nEpochs 1 --snapshots 1 --dataset lol_v1，这条指令是写在VScode的终端里面的，写了之后运行，能看到跑1个epoch下的基准模型的PSNR、SSIM以及LPIPS。
+
+然后跑10个epoch，能看到一点初步的趋势
+再然后可以跑更长的epoch，50个100个，这样基本上能看到基准模型的原始性能。
+
+之后就可以随便修改参数，进行观察。还可以添加各种模块，观察能否提升性能。
+
+记录一下跑1个的数据：
+还是先解释一下怎么看数据吧：简单来说就是PSNR 越高越好，SSIM 越高越好，LPIPS 越低越好。有以下几个层次：第一个就是看那三个指标的趋势对不对；第二个就是看训练的层次，一般来讲10个epoch的训练结果会比1个epoch的结果好（但是也不一定啊，得看具体情况），但是并不是训练的次数越多越好！！！因为很有可能训练到最后会有过拟合的情况出现，就是训练前期快速变好、中期缓慢提升、后期进入平台期、再继续训可能开始过拟合。所以我们要挑出效果最好的那一个模型作为最优性能的baseline继续往后训练和推理。
+
+训练结果都被保存在这里：C:/Users/lenovo/Desktop/deeplearning/HVI-CIDNet-experiment/results/training里面的metrics里面
+
+dataset: lol_v1
+lr: 0.0001
+batch size: 1
+crop size: 256
+HVI_weight: disabled for UNet baseline
+L1_weight: 1.0
+D_weight: 0.5
+E_weight: 50.0
+P_weight: 0.01
+| Epochs | PSNR | SSIM | LPIPS |
+|----------------------|----------------------|----------------------|----------------------|
+| 1 | 17.2453 | 0.7308 | 0.4652 |
+
+如果大家跑了好几个这种1个epoch的，就会发现每次的结果其实不太一样，这是因为运行的时候会有一定的随机性，就会产生一定的结果波动。所以1个epoch不能作为判定标准。
+
+-----------------------------------------------------------------------分割线---------------------------------------------------------------------------------
+
+记录一下跑10个的数据：
+dataset: lol_v1
+lr: 0.0001
+batch size: 1
+crop size: 256
+HVI_weight: disabled for UNet baseline
+L1_weight: 1.0
+D_weight: 0.5
+E_weight: 50.0
+P_weight: 0.01
+| Epochs | PSNR | SSIM | LPIPS |
+|----------------------|----------------------|----------------------|----------------------|
+| 1 | 6.9476 | 0.1279 | 0.9676 |
+| 2 | 17.3309 | 0.7139 | 0.5179 |
+| 3 | 18.4082 | 0.7535 | 0.3524 |
+| 4 | 18.8061 | 0.7647 | 0.2779 |
+| 5 | 17.4452 | 0.7582 | 0.2539 |
+| 6 | 19.6233 | 0.7771 | 0.2357 |
+| 7 | 18.4878 | 0.7753 | 0.2571 |
+| 8 | 19.5289 | 0.7801 | 0.2181 |
+| 9 | 19.2695 | 0.7785 | 0.2226 |
+| 10 | 19.8314 | 0.7824 | 0.2124 |
+
+比如你在跑完了10个之后还想跑50个epoch那个（0-50），那么我们可以这样：在终端中输入指令：
+set PYTHONPATH=C:\Users\lenovo\Desktop\deeplearning\HVI-CIDNet-experiment\.vendor\site-packages && python train.py --gpu_mode false --threads 0 --batchSize 1 --start_epoch 10 --nEpochs 40 --snapshots 1 --dataset lol_v1
+意思是在原来10个的基础上继续跑40个。
+
+-----------------------------------------------------------------------分割线---------------------------------------------------------------------------------
+
+记录一下跑50个的数据：
+dataset: lol_v1
+lr: 0.0001
+batch size: 1
+crop size: 256
+HVI_weight: disabled for UNet baseline
+L1_weight: 1.0
+D_weight: 0.5
+E_weight: 50.0
+P_weight: 0.01
+| Epochs | PSNR | SSIM | LPIPS |
+|----------------------|----------------------|----------------------|----------------------|
+| 1 | 6.9476 | 0.1279 | 0.9676 |
+| 2 | 17.3309 | 0.7139 | 0.5179 |
+| 3 | 18.4082 | 0.7535 | 0.3524 |
+| 4 | 18.8061 | 0.7647 | 0.2779 |
+| 5 | 17.4452 | 0.7582 | 0.2539 |
+| 6 | 19.6233 | 0.7771 | 0.2357 |
+| 7 | 18.4878 | 0.7753 | 0.2571 |
+| 8 | 19.5289 | 0.7801 | 0.2181 |
+| 9 | 19.2695 | 0.7785 | 0.2226 |
+| 10 | 19.8314 | 0.7824 | 0.2124 |
+| 11 | 19.8314 | 0.7824 | 0.2124 |
+| 12 | 19.9531 | 0.7838 | 0.2131 |
+| 13 | 18.8243 | 0.7757 | 0.2235 |
+| 14 | 18.9973 | 0.7769 | 0.2170 |
+| 15 | 20.1048 | 0.7894 | 0.1968 |
+| 16 | 18.4781 | 0.7730 | 0.2104 |
+| 17 | 19.0595 | 0.7823 | 0.2297 |
+| 18 | 18.0621 | 0.7876 | 0.2048 |
+| 19 | 19.7504 | 0.7897 | 0.2053 |
+| 20 | 19.6507 | 0.7865 | 0.1943 |
+| 21 | 19.4479 | 0.7953 | 0.1884 |
+| 22 | 19.7071 | 0.7983 | 0.1832 |
+| 23 | 18.9866 | 0.7940 | 0.2002 |
+| 24 | 18.8242 | 0.7978 | 0.1839 |
+| 25 | 20.1696 | 0.7980 | 0.1758 |
+| 26 | 18.4300 | 0.7958 | 0.1853 |
+| 27 | 19.0278 | 0.7858 | 0.1872 |
+| 28 | 20.0701 | 0.7960 | 0.1850 |
+| 29 | 19.8970 | 0.7947 | 0.1805 |
+| 30 | 19.8962 | 0.8027 | 0.1798 |
+| 31 | 19.6934 | 0.7955 | 0.1843 |
+| 32 | 19.9606 | 0.8007 | 0.1798 |
+| 33 | 20.3023 | 0.8030 | 0.1699 |
+| 34 | 20.1492 | 0.7993 | 0.1757 |
+| 35 | 19.7654 | 0.8054 | 0.1684 |
+| 36 | 20.1652 | 0.8048 | 0.1681 |
+| 37 | 20.1386 | 0.8041 | 0.1704 |
+| 38 | 20.1374 | 0.8047 | 0.1683 |
+| 39 | 19.9310 | 0.8053 | 0.1690 |
+| 40 | 20.1864 | 0.8046 | 0.1685 |
+| 41 | 20.1962 | 0.8045 | 0.1689 |
+| 42 | 20.1962 | 0.8045 | 0.1689 |
+| 43 | 17.9952 | 0.7924 | 0.1751 |
+| 44 | 20.2332 | 0.8005 | 0.1726 |
+| 45 | 17.4541 | 0.7741 | 0.1912 |
+| 46 | 19.5747 | 0.7953 | 0.1881 |
+| 47 | 19.3433 | 0.7935 | 0.1754 |
+| 48 | 19.6024 | 0.8026 | 0.1668 |
+| 49 | 19.6070 | 0.8019 | 0.1792 |
+| 50 | 20.3613 | 0.8045 | 0.1629 |
+
+从目前来看这个Unet已经进入了平台期，数据波动比较平稳，所以没有必要继续跑下去了，如果继续跑下去可能会导致数据的过拟合，造成相反的结果。所以目前最好的模型是epoch是50。所以我们可以基于epoch50这个最佳baseline进行修改。
 

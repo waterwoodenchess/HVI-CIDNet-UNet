@@ -188,8 +188,10 @@ def build_model():
 
 def make_scheduler():
     optimizer = optim.Adam(model.parameters(), lr=opt.lr)
-    total_epochs = max(1, opt.nEpochs)
-    remaining_epochs = max(1, total_epochs - opt.start_epoch)
+    # In this script, nEpochs is the number of epochs to run in the
+    # current invocation. When resuming from start_epoch, the loop still
+    # runs nEpochs additional epochs, so the scheduler should match it.
+    remaining_epochs = max(1, opt.nEpochs)
 
     # The original scheduler config assumes a long real training run.
     # For CPU smoke tests / dry runs, clamp periods so the scheduler stays valid.
@@ -359,4 +361,5 @@ if __name__ == '__main__':
             with open(f"./results/training/metrics{now}.md", "a") as f:
                 f.write(f"| {epoch} | { avg_psnr:.4f} | {avg_ssim:.4f} | {avg_lpips:.4f} |\n")  
         empty_cache(device)
+
 

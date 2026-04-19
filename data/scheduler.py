@@ -82,6 +82,8 @@ def get_position_from_periods(iteration, cumulative_period):
         if iteration <= period:
             return i
         
+    return len(cumulative_period) - 1
+
 class CosineAnnealingRestartCyclicLR(_LRScheduler):
     """ Cosine annealing with restarts learning rate scheme.
     An example of config:
@@ -170,3 +172,4 @@ class CosineAnnealingRestartLR(_LRScheduler):
             (1 + math.cos(math.pi * ((self.last_epoch - nearest_restart) / current_period)))
             for base_lr in self.base_lrs
         ]
+
